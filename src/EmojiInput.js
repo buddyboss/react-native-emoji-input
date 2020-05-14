@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     AsyncStorage,
-    StyleSheet
+    StyleSheet,
+    ViewPropTypes
 } from 'react-native';
 import {
     RecyclerListView,
@@ -636,8 +637,8 @@ EmojiInput.defaultProps = {
 };
 
 EmojiInput.propTypes = {
-    isVisible: PropTypes.boolean,
-    containerStyle: PropTypes.object,
+    isVisible: PropTypes.bool,
+    containerStyle: ViewPropTypes.style,
     keyboardBackgroundColor: PropTypes.string,
     width: PropTypes.number,
     numColumns: PropTypes.number,
