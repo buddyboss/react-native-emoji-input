@@ -511,6 +511,7 @@ class EmojiInput extends React.PureComponent {
                         rowRenderer={this._rowRenderer}
                         ref={component => (this._recyclerListView = component)}
                         onScroll={this.handleScroll}
+                        scrollEventThrottle={120}
                         keyboardShouldPersistTaps={keyboardShouldPersistTaps}
                     />
                     {!this.state.searchQuery &&
