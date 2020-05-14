@@ -7,7 +7,8 @@ import {
     Dimensions,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    AsyncStorage
+    AsyncStorage,
+    StyleSheet
 } from 'react-native';
 import {
     RecyclerListView,
@@ -444,76 +445,6 @@ class EmojiInput extends React.PureComponent {
                         position: 'relative'
                     }}
                 >
-                    {enableSearch && (
-                        <TextInput
-                            ref={input => {
-                                this.textInput = input;
-                            }}
-                            placeholderTextColor={'#A0A0A2'}
-                            style={{
-                                backgroundColor: 'white',
-                                borderColor: '#A0A0A2',
-                                borderWidth: 0.5,
-                                color: 'black',
-                                fontSize: responsiveFontSize(2),
-                                padding: 10,
-                                paddingLeft: 15,
-                                borderRadius: 15,
-                                margin: 10,
-                            }}
-                            returnKeyType={'search'}
-                            clearButtonMode={'always'}
-                            placeholder={'Search emoji'}
-                            autoCorrect={false}
-                            onChangeText={text => {
-                                this.setState({
-                                    searchQuery: text
-                                });
-                                if (text.length) {
-                                    if (
-                                        text.length >
-                                        this.state.previousLongestQuery.length
-                                    ) {
-                                        this.setState({
-                                            previousLongestQuery: text
-                                        });
-                                    }
-                                } else {
-                                    if (this.loggingFunction) {
-                                        if (this.verboseLoggingFunction) {
-                                            this.loggingFunction(
-                                                this.state.previousLongestQuery,
-                                                'previousLongestQuery'
-                                            );
-                                        } else {
-                                            this.loggingFunction(
-                                                this.state.previousLongestQuery
-                                            );
-                                        }
-                                    }
-                                    this.setState({
-                                        previousLongestQuery: ''
-                                    });
-                                }
-                            }}
-                        />
-                    )}
-                    {this.state.emptySearchResult && (
-                        <View style={styles.emptySearchResultContainer}>
-                            <Text>No search results.</Text>
-                        </View>
-                    )}
-                    <RecyclerListView
-                        style={{ flex: 1 }}
-                        renderAheadOffset={renderAheadOffset}
-                        layoutProvider={this._layoutProvider}
-                        dataProvider={this.state.dataProvider}
-                        rowRenderer={this._rowRenderer}
-                        ref={component => (this._recyclerListView = component)}
-                        onScroll={this.handleScroll}
-                        scrollEventThrottle={120}
-                        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
-                    />
                     {!this.state.searchQuery &&
                         this.props.showCategoryTab && (
                             <TouchableWithoutFeedback>
@@ -614,6 +545,78 @@ class EmojiInput extends React.PureComponent {
                             </View>
                         </Animatable.View>
                     )}
+                    {enableSearch && (
+                        <TextInput
+                            ref={input => {
+                                this.textInput = input;
+                            }}
+                            placeholderTextColor={'#555'}
+                            style={{
+                                backgroundColor: '#E5E8E9',
+                                borderColor: '#E5E8E9',
+                                borderWidth: 0.5,
+                                color: 'black',
+                                fontSize: responsiveFontSize(1.6),
+                                paddingHorizontal: 10,
+                                paddingVertical: 6,
+                                paddingLeft: 15,
+                                borderRadius: 6,
+                                margin: 10,
+                                marginBottom: 2,
+                            }}
+                            returnKeyType={'search'}
+                            clearButtonMode={'always'}
+                            placeholder={'Search...'}
+                            autoCorrect={false}
+                            onChangeText={text => {
+                                this.setState({
+                                    searchQuery: text
+                                });
+                                if (text.length) {
+                                    if (
+                                        text.length >
+                                        this.state.previousLongestQuery.length
+                                    ) {
+                                        this.setState({
+                                            previousLongestQuery: text
+                                        });
+                                    }
+                                } else {
+                                    if (this.loggingFunction) {
+                                        if (this.verboseLoggingFunction) {
+                                            this.loggingFunction(
+                                                this.state.previousLongestQuery,
+                                                'previousLongestQuery'
+                                            );
+                                        } else {
+                                            this.loggingFunction(
+                                                this.state.previousLongestQuery
+                                            );
+                                        }
+                                    }
+                                    this.setState({
+                                        previousLongestQuery: ''
+                                    });
+                                }
+                            }}
+                        />
+                    )}
+                    {this.state.emptySearchResult && (
+                        <View style={styles.emptySearchResultContainer}>
+                            <Text>No search results.</Text>
+                        </View>
+                    )}
+                    <RecyclerListView
+                        style={{ flex: 1 }}
+                        renderAheadOffset={renderAheadOffset}
+                        layoutProvider={this._layoutProvider}
+                        dataProvider={this.state.dataProvider}
+                        rowRenderer={this._rowRenderer}
+                        ref={component => (this._recyclerListView = component)}
+                        onScroll={this.handleScroll}
+                        scrollEventThrottle={120}
+                        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+                    />
                 </View>
             </View>
         );
@@ -678,7 +681,7 @@ EmojiInput.propTypes = {
     keyboardShouldPersistTaps: PropTypes.oneOf('always', 'never', 'handled')
 };
 
-const styles = {
+const styles = StyleSheet.create({
     hidden: {
         position: 'absolute',
         bottom: -800,
@@ -691,9 +694,12 @@ const styles = {
     },
     footerContainer: {
         width: '100%',
-        paddingVertical: 15,
+        paddingVertical: 8,
         backgroundColor: '#fff',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        borderColor: "#c1c1c1",
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderBottomWidth: StyleSheet.hairlineWidth
     },
     emptySearchResultContainer: {
         flex: 1,
@@ -716,17 +722,20 @@ const styles = {
         justifyContent: 'space-around'
     },
     skinSelectorContainer: {
-        width: '100%',
+        width: '98%',
+        left: '1%',
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        position: 'absolute'
+        position: 'absolute',
+        zIndex: 10,
     },
     skinSelector: {
         width: '100%',
         justifyContent: 'space-around',
         alignItems: 'center',
         flexDirection: 'row',
+        borderRadius: 5,
         backgroundColor: '#fff'
     },
     skinSelectorTriangleContainer: {
@@ -735,6 +744,6 @@ const styles = {
     skinEmoji: {
         flex: 1
     }
-};
+});
 
 export default EmojiInput;
