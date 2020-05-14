@@ -433,191 +433,195 @@ class EmojiInput extends React.PureComponent {
 
     render() {
         const { selectedEmoji, offsetY } = this.state;
-        const { enableSearch, width, renderAheadOffset, keyboardShouldPersistTaps } = this.props;
+        const { enableSearch, width, renderAheadOffset, keyboardShouldPersistTaps, isVisible, containerStyle } = this.props;
         return (
-            <View
-                style={{
-                    flex: 1,
-                    width,
-                    backgroundColor: this.props.keyboardBackgroundColor,
-                    position: 'relative'
-                }}
-            >
-                {enableSearch && (
-                    <TextInput
-                        ref={input => {
-                            this.textInput = input;
-                        }}
-                        placeholderTextColor={'#A0A0A2'}
-                        style={{
-                            backgroundColor: 'white',
-                            borderColor: '#A0A0A2',
-                            borderWidth: 0.5,
-                            color: 'black',
-                            fontSize: responsiveFontSize(2),
-                            padding: 10,
-                            paddingLeft: 15,
-                            borderRadius: 15,
-                            margin: 10,
-                        }}
-                        returnKeyType={'search'}
-                        clearButtonMode={'always'}
-                        placeholder={'Search emoji'}
-                        autoCorrect={false}
-                        onChangeText={text => {
-                            this.setState({
-                                searchQuery: text
-                            });
-                            if (text.length) {
-                                if (
-                                    text.length >
-                                    this.state.previousLongestQuery.length
-                                ) {
+            <View style={[containerStyle, isVisible ? {} : styles.hidden, {width}]}>
+                <View
+                    style={{
+                        flex: 1,
+                        width,
+                        backgroundColor: this.props.keyboardBackgroundColor,
+                        position: 'relative'
+                    }}
+                >
+                    {enableSearch && (
+                        <TextInput
+                            ref={input => {
+                                this.textInput = input;
+                            }}
+                            placeholderTextColor={'#A0A0A2'}
+                            style={{
+                                backgroundColor: 'white',
+                                borderColor: '#A0A0A2',
+                                borderWidth: 0.5,
+                                color: 'black',
+                                fontSize: responsiveFontSize(2),
+                                padding: 10,
+                                paddingLeft: 15,
+                                borderRadius: 15,
+                                margin: 10,
+                            }}
+                            returnKeyType={'search'}
+                            clearButtonMode={'always'}
+                            placeholder={'Search emoji'}
+                            autoCorrect={false}
+                            onChangeText={text => {
+                                this.setState({
+                                    searchQuery: text
+                                });
+                                if (text.length) {
+                                    if (
+                                        text.length >
+                                        this.state.previousLongestQuery.length
+                                    ) {
+                                        this.setState({
+                                            previousLongestQuery: text
+                                        });
+                                    }
+                                } else {
+                                    if (this.loggingFunction) {
+                                        if (this.verboseLoggingFunction) {
+                                            this.loggingFunction(
+                                                this.state.previousLongestQuery,
+                                                'previousLongestQuery'
+                                            );
+                                        } else {
+                                            this.loggingFunction(
+                                                this.state.previousLongestQuery
+                                            );
+                                        }
+                                    }
                                     this.setState({
-                                        previousLongestQuery: text
+                                        previousLongestQuery: ''
                                     });
                                 }
-                            } else {
-                                if (this.loggingFunction) {
-                                    if (this.verboseLoggingFunction) {
-                                        this.loggingFunction(
-                                            this.state.previousLongestQuery,
-                                            'previousLongestQuery'
-                                        );
-                                    } else {
-                                        this.loggingFunction(
-                                            this.state.previousLongestQuery
-                                        );
-                                    }
-                                }
-                                this.setState({
-                                    previousLongestQuery: ''
-                                });
-                            }
-                        }}
-                    />
-                )}
-                {this.state.emptySearchResult && (
-                    <View style={styles.emptySearchResultContainer}>
-                        <Text>No search results.</Text>
-                    </View>
-                )}
-                <RecyclerListView
-                    style={{ flex: 1 }}
-                    renderAheadOffset={renderAheadOffset}
-                    layoutProvider={this._layoutProvider}
-                    dataProvider={this.state.dataProvider}
-                    rowRenderer={this._rowRenderer}
-                    ref={component => (this._recyclerListView = component)}
-                    onScroll={this.handleScroll}
-                    keyboardShouldPersistTaps={keyboardShouldPersistTaps}
-                />
-                {!this.state.searchQuery &&
-                    this.props.showCategoryTab && (
-                        <TouchableWithoutFeedback>
-                            <View style={styles.footerContainer}>
-                                {_
-                                    .drop(
-                                        category,
-                                        this.props.enableFrequentlyUsedEmoji
-                                            ? 0
-                                            : 1
-                                    )
-                                    .map(({ key }) => (
-                                        <TouchableOpacity
-                                            key={key}
-                                            onPress={() =>
-                                                this.handleCategoryPress(key)
-                                            }
-                                            style={styles.categoryIconContainer}
-                                        >
-                                            <View>
-                                                {categoryIcon[key]({
-                                                    color:
-                                                        key ===
-                                                        this.state
-                                                            .currentCategoryKey
-                                                            ? this.props
-                                                                  .categoryHighlightColor
-                                                            : this.props
-                                                                  .categoryUnhighlightedColor,
-                                                    size: this.props
-                                                        .categoryFontSize
-                                                })}
-                                            </View>
-                                        </TouchableOpacity>
-                                    ))}
-                            </View>
-                        </TouchableWithoutFeedback>
+                            }}
+                        />
                     )}
-                {selectedEmoji && (
-                    <Animatable.View
-                        animation="bounceIn"
-                        style={[
-                            styles.skinSelectorContainer,
-                            {
-                                top:
-                                    selectedEmoji.y -
-                                    offsetY -
-                                    width / this.props.numColumns +
-                                    (enableSearch ? 35 : 0)
-                            }
-                        ]}
-                    >
-                        <View
+                    {this.state.emptySearchResult && (
+                        <View style={styles.emptySearchResultContainer}>
+                            <Text>No search results.</Text>
+                        </View>
+                    )}
+                    <RecyclerListView
+                        style={{ flex: 1 }}
+                        renderAheadOffset={renderAheadOffset}
+                        layoutProvider={this._layoutProvider}
+                        dataProvider={this.state.dataProvider}
+                        rowRenderer={this._rowRenderer}
+                        ref={component => (this._recyclerListView = component)}
+                        onScroll={this.handleScroll}
+                        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+                    />
+                    {!this.state.searchQuery &&
+                        this.props.showCategoryTab && (
+                            <TouchableWithoutFeedback>
+                                <View style={styles.footerContainer}>
+                                    {_
+                                        .drop(
+                                            category,
+                                            this.props.enableFrequentlyUsedEmoji
+                                                ? 0
+                                                : 1
+                                        )
+                                        .map(({ key }) => (
+                                            <TouchableOpacity
+                                                key={key}
+                                                onPress={() =>
+                                                    this.handleCategoryPress(key)
+                                                }
+                                                style={styles.categoryIconContainer}
+                                            >
+                                                <View>
+                                                    {categoryIcon[key]({
+                                                        color:
+                                                            key ===
+                                                            this.state
+                                                                .currentCategoryKey
+                                                                ? this.props
+                                                                    .categoryHighlightColor
+                                                                : this.props
+                                                                    .categoryUnhighlightedColor,
+                                                        size: this.props
+                                                            .categoryFontSize
+                                                    })}
+                                                </View>
+                                            </TouchableOpacity>
+                                        ))}
+                                </View>
+                            </TouchableWithoutFeedback>
+                        )}
+                    {selectedEmoji && (
+                        <Animatable.View
+                            animation="bounceIn"
                             style={[
-                                styles.skinSelector,
+                                styles.skinSelectorContainer,
                                 {
-                                    height: this.props.emojiFontSize + 20
+                                    top:
+                                        selectedEmoji.y -
+                                        offsetY -
+                                        width / this.props.numColumns +
+                                        (enableSearch ? 35 : 0)
                                 }
                             ]}
                         >
-                            {_(_.get(selectedEmoji, ['lib', 'skin_variations']))
-                                .map(data => {
-                                    return (
-                                        <View
-                                            style={styles.skinEmoji}
-                                            key={data.unified}
-                                        >
-                                            <Emoji
-                                                onPress={this.handleEmojiPress}
-                                                data={{
-                                                    ...data,
-                                                    derivedFrom: selectedEmoji
-                                                }}
-                                                size={this.props.emojiFontSize}
-                                            />
-                                        </View>
-                                    );
-                                })
-                                .value()}
-                        </View>
-                        <View
-                            style={[
-                                styles.skinSelectorTriangleContainer,
-                                {
-                                    marginLeft:
-                                        selectedEmoji.x +
-                                        width / this.props.numColumns / 2 -
-                                        30 / 2
-                                }
-                            ]}
-                        >
-                            <Triangle
-                                width={30}
-                                height={20}
-                                color={'#fff'}
-                                direction={'down'}
-                            />
-                        </View>
-                    </Animatable.View>
-                )}
+                            <View
+                                style={[
+                                    styles.skinSelector,
+                                    {
+                                        height: this.props.emojiFontSize + 20
+                                    }
+                                ]}
+                            >
+                                {_(_.get(selectedEmoji, ['lib', 'skin_variations']))
+                                    .map(data => {
+                                        return (
+                                            <View
+                                                style={styles.skinEmoji}
+                                                key={data.unified}
+                                            >
+                                                <Emoji
+                                                    onPress={this.handleEmojiPress}
+                                                    data={{
+                                                        ...data,
+                                                        derivedFrom: selectedEmoji
+                                                    }}
+                                                    size={this.props.emojiFontSize}
+                                                />
+                                            </View>
+                                        );
+                                    })
+                                    .value()}
+                            </View>
+                            <View
+                                style={[
+                                    styles.skinSelectorTriangleContainer,
+                                    {
+                                        marginLeft:
+                                            selectedEmoji.x +
+                                            width / this.props.numColumns / 2 -
+                                            30 / 2
+                                    }
+                                ]}
+                            >
+                                <Triangle
+                                    width={30}
+                                    height={20}
+                                    color={'#fff'}
+                                    direction={'down'}
+                                />
+                            </View>
+                        </Animatable.View>
+                    )}
+                </View>
             </View>
         );
     }
 }
 
 EmojiInput.defaultProps = {
+    isVisible: true,
+    containerStyle: { flex: 1 },
     keyboardBackgroundColor: '#E3E1EC',
     width: WINDOW_WIDTH,
     numColumns: 6,
@@ -645,6 +649,8 @@ EmojiInput.defaultProps = {
 };
 
 EmojiInput.propTypes = {
+    isVisible: PropTypes.boolean,
+    containerStyle: PropTypes.object,
     keyboardBackgroundColor: PropTypes.string,
     width: PropTypes.number,
     numColumns: PropTypes.number,
@@ -672,6 +678,11 @@ EmojiInput.propTypes = {
 };
 
 const styles = {
+    hidden: {
+        position: 'absolute',
+        bottom: -800,
+        opacity: 0
+    },
     cellContainer: {
         justifyContent: 'space-around',
         alignItems: 'center',
