@@ -20,7 +20,6 @@ import _ from 'lodash';
 import {
     responsiveFontSize
 } from 'react-native-responsive-dimensions';
-import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 import EmojiSearchSpace from "./EmojiSearch";
 
@@ -34,25 +33,15 @@ const {
 } = require('./emoji-data/compiled');
 
 const categoryIcon = {
-    fue: props => <Icon name="clock" type="material-community" {...props} />,
-    people: props => <Icon name="face" {...props} />,
-    animals_and_nature: props => (
-        <Icon name="trees" type="foundation" {...props} />
-    ),
-    food_and_drink: props => (
-        <Icon name="food" type="material-community" {...props} />
-    ),
-    activity: props => (
-        <Icon name="football" type="material-community" {...props} />
-    ),
-    travel_and_places: props => (
-        <Icon name="plane" type="font-awesome" {...props} />
-    ),
-    objects: props => (
-        <Icon name="lightbulb" type="material-community" {...props} />
-    ),
-    symbols: props => <Icon name="heart" type="foundation" {...props} />,
-    flags: props => <Icon name="flag" {...props} />
+    fue: "🕘",
+    people: "🧑",
+    animals_and_nature: "🦄",
+    food_and_drink: "🍔",
+    activity: "⚾️",
+    travel_and_places: "✈️",
+    objects: "💡",
+    symbols: "🔣",
+    flags: "🏳️‍🌈"
 };
 
 const { width: WINDOW_WIDTH } = Dimensions.get('window');
@@ -448,7 +437,7 @@ class EmojiInput extends React.PureComponent {
                     {!this.state.searchQuery &&
                         this.props.showCategoryTab && (
                             <TouchableWithoutFeedback>
-                                <View style={styles.footerContainer}>
+                                <View style={styles.headerContainer}>
                                     {_
                                         .drop(
                                             category,
@@ -462,22 +451,16 @@ class EmojiInput extends React.PureComponent {
                                                 onPress={() =>
                                                     this.handleCategoryPress(key)
                                                 }
-                                                style={styles.categoryIconContainer}
+                                                style={[
+                                                    styles.categoryIconContainer,
+                                                    {
+                                                        borderBottomWidth : key === this.state.currentCategoryKey ? 2 : 0
+                                                    }
+                                                ]}
                                             >
-                                                <View>
-                                                    {categoryIcon[key]({
-                                                        color:
-                                                            key ===
-                                                            this.state
-                                                                .currentCategoryKey
-                                                                ? this.props
-                                                                    .categoryHighlightColor
-                                                                : this.props
-                                                                    .categoryUnhighlightedColor,
-                                                        size: this.props
-                                                            .categoryFontSize
-                                                    })}
-                                                </View>
+                                                <Text>
+                                                    {categoryIcon[key]}
+                                                </Text>
                                             </TouchableOpacity>
                                         ))}
                                 </View>
@@ -692,9 +675,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1
     },
-    footerContainer: {
+    headerContainer: {
         width: '100%',
-        paddingVertical: 8,
+        height: 40,
+        alignItems: "center",
+        justifyContent: "center",
         backgroundColor: '#fff',
         flexDirection: 'row',
         borderColor: "#c1c1c1",
@@ -719,7 +704,9 @@ const styles = StyleSheet.create({
     categoryIconContainer: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        height: "100%",
+        borderColor: "blue"
     },
     skinSelectorContainer: {
         width: '98%',
