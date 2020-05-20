@@ -386,11 +386,15 @@ class EmojiInput extends React.PureComponent {
     }
 
     handleCategoryPress = key => {
-        this._recyclerListView.scrollToOffset(
-            0,
-            category[categoryIndexMap[key].idx].y + 1,
-            false
-        );
+        this.setState({
+            currentCategoryKey: key
+        }, () => {
+            this._recyclerListView.scrollToOffset(
+                0,
+                category[categoryIndexMap[key].idx].y + 1,
+                false
+            );
+        })
     };
 
     handleScroll = (rawEvent, offsetX, offsetY) => {
